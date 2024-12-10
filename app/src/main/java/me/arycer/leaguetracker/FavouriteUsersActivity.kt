@@ -41,16 +41,16 @@ class FavouriteUsersActivity : AppCompatActivity() {
 
     private fun generateSampleUsers(): Collection<FavouriteUser> {
         return listOf(
-            FavouriteUser("Arycer", "0000", FavouriteUser.Region.EUW, 1),
-            FavouriteUser("I HATE JINX", "0000", FavouriteUser.Region.EUW, 2),
-            FavouriteUser("Nightess", "0000", FavouriteUser.Region.EUW, 3),
-            FavouriteUser("Arturisimoooo", "0000", FavouriteUser.Region.EUW, 4),
-            FavouriteUser("ToukaLover", "0000", FavouriteUser.Region.EUW, 5),
-            FavouriteUser("AleIV", "0000", FavouriteUser.Region.EUW, 6),
-            FavouriteUser("PaulleXd", "0000", FavouriteUser.Region.EUW, 7),
-            FavouriteUser("MitosV", "0000", FavouriteUser.Region.EUW, 8),
-            FavouriteUser("Suuitt", "0000", FavouriteUser.Region.EUW, 9),
-            FavouriteUser("CelesteLove", "0000", FavouriteUser.Region.EUW, 10)
+            FavouriteUser("Arycer", "5190", FavouriteUser.Region.EUW),
+            FavouriteUser("T0uk4", "L0v3R", FavouriteUser.Region.EUW),
+            FavouriteUser("Likantros", "0000", FavouriteUser.Region.EUW),
+            FavouriteUser("Arturisimoooo", "0000", FavouriteUser.Region.EUW),
+            FavouriteUser("ToukaLover", "0000", FavouriteUser.Region.EUW),
+            FavouriteUser("AleIV", "0000", FavouriteUser.Region.EUW),
+            FavouriteUser("PaulleXd", "0000", FavouriteUser.Region.EUW),
+            FavouriteUser("MitosV", "0000", FavouriteUser.Region.EUW),
+            FavouriteUser("Suuitt", "0000", FavouriteUser.Region.EUW),
+            FavouriteUser("CelesteLove", "0000", FavouriteUser.Region.EUW)
         )
     }
 }

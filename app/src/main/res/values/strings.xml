@@ -3,4 +3,15 @@
     <string name="default_username">admin</string>
     <string name="default_password">admin</string>
     <string name="user_name_tagline">%s#%s</string>
+    <string name="region_format">Region: %s</string>
+    <string name="level_format">Level: %d</string>
+    <string name="league_format">%s %s</string>
+    <string name="lps_format">LP: %d</string>
+    <string name="winrate_format">%d Win - %d Losses</string>
+    <string name="rank_tier">Rank - Tier</string>
+    <string name="league_points">League Points</string>
+    <string name="wins_losses">Wins/Losses</string>
+    <string name="player_name_tagline">Player Name#Tagline</string>
+    <string name="player_region">Player Region</string>
+    <string name="player_level">Player Level</string>
 </resources>

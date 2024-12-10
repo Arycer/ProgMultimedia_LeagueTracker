@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -28,28 +29,32 @@
                     android:id="@+id/profile_image"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:importantForAccessibility="no"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_launcher_background" />
 
             <TextView
+                    android:id="@+id/rank_tier_text"
                     android:layout_marginTop="3dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rank - Tier"
+                    android:text="@string/rank_tier"
                     android:textSize="14sp"
                     android:textColor="@color/white" />
 
             <TextView
+                    android:id="@+id/lps_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="League Points"
+                    android:text="@string/league_points"
                     android:textSize="14sp"
                     android:textColor="@color/white" />
 
             <TextView
+                    android:id="@+id/winrate_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wins/Losses"
+                    android:text="@string/wins_losses"
                     android:textSize="14sp"
                     android:textColor="@color/white" />
 
@@ -67,19 +72,34 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:elevation="10dp"
-                    android:text="Player Name#Tagline"
+                    android:text="@string/player_name_tagline"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:textColor="@color/yellow_200" />
 
-            <TextView
-                    android:id="@+id/region_text"
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Player Region"
-                    android:textSize="14sp"
-                    android:textColor="@color/white" />
+                    android:orientation="vertical">
+
+                <TextView
+                        android:id="@+id/region_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/player_region"
+                        android:textSize="14sp"
+                        android:textColor="@color/white" />
+
+                <TextView
+                        android:id="@+id/level_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/player_level"
+                        android:textSize="14sp"
+                        android:textColor="@color/white" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton

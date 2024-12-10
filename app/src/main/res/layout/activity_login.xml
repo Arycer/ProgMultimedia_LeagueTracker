@@ -62,17 +62,25 @@
                     android:layout_marginTop="10dp"
                     android:paddingBottom="-0dp">
 
-                <EditText
-                        android:id="@+id/password_field"
-                        android:layout_width="300dp"
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/password_text_input"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:autofillHints=""
-                        android:background="@android:color/transparent"
-                        android:textColorHighlight="@color/white"
-                        android:textColorLink="@color/white"
-                        android:inputType="textPassword"
+                        app:endIconMode="password_toggle"
                         android:hint="Contraseña"
-                        android:layout_marginStart="10dp" />
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/password_field"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:textColorHighlight="@color/white"
+                            android:textColorLink="@color/white"
+                            android:background="@android:color/transparent" />
+
+                </com.google.android.material.textfield.TextInputLayout>
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatButton

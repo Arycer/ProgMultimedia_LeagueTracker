@@ -7,12 +7,12 @@
     <string name="level_format">Level: %d</string>
     <string name="league_format">%s %s</string>
     <string name="lps_format">LP: %d</string>
-    <string name="winrate_format">%d Win - %d Losses</string>
+    <string name="winrate_format">%dW %dL (%s%%)</string>
     <string name="rank_tier">Rank - Tier</string>
     <string name="league_points">League Points</string>
     <string name="wins_losses">Wins/Losses</string>
     <string name="player_name_tagline">Player Name#Tagline</string>
     <string name="player_region">Player Region</string>
     <string name="player_level">Player Level</string>
-    <string name="profile_loading">Loading...</string>
+    <string name="profile_loading">Loading…</string>
 </resources>

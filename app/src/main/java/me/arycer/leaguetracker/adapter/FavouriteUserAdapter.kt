@@ -124,10 +124,21 @@ class FavouriteUserAdapter(
             profile?.soloRankedInfo?.leaguePoints ?: 0
         )
 
+        var winRatePercentage = 0f
+        profile?.let {
+            val totalGames = profile.soloRankedInfo?.wins?.plus(profile.soloRankedInfo.losses) ?: 0
+            winRatePercentage = if (totalGames > 0) {
+                (profile.soloRankedInfo?.wins?.toFloat() ?: 0f) / totalGames * 100
+            } else {
+                0f
+            }
+        }
+
         holder.winrateTextView.text = context.getString(
             R.string.winrate_format,
             profile?.soloRankedInfo?.wins ?: 0,
-            profile?.soloRankedInfo?.losses ?: 0
+            profile?.soloRankedInfo?.losses ?: 0,
+            "%.2f".format(winRatePercentage)
         )
 
         val profileImageUrl = buildProfileImageUrl(profile?.profileIconId ?: 1)

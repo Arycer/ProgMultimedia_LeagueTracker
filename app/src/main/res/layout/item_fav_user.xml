@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:background="@color/purple_200"
+            >
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="160dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="vertical">
+
+            <ImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_launcher_background" />
+
+            <TextView
+                    android:layout_marginTop="3dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rank - Tier"
+                    android:textSize="14sp"
+                    android:textColor="@color/white" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="League Points"
+                    android:textSize="14sp"
+                    android:textColor="@color/white" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wins/Losses"
+                    android:textSize="14sp"
+                    android:textColor="@color/white" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="160dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/player_name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="10dp"
+                    android:text="Player Name#Tagline"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="@color/yellow_200" />
+
+            <TextView
+                    android:id="@+id/region_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Player Region"
+                    android:textSize="14sp"
+                    android:textColor="@color/white" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/delete_button"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/trash"
+
+
+                android:textColor="@color/white"
+                android:elevation="10dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

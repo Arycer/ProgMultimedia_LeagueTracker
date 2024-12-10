@@ -17,13 +17,4 @@ class FavouriteUser(
         LAN("Latin America North"),
         LAS("Latin America South")
     }
-
-    data class RankedInfo(
-        val queue: String,
-        val tier: String,
-        val rank: String,
-        val lp: Int,
-        val wins: Int,
-        val losses: Int
-    )
 }

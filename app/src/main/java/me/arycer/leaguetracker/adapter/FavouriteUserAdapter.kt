@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.arycer.leaguetracker.R
@@ -24,6 +25,9 @@ class FavouriteUserAdapter(
     private val onDeleteUser: (Int) -> Unit
 ) : RecyclerView.Adapter<FavouriteUserAdapter.FavouriteUserViewHolder>() {
 
+    private val profileCache: MutableMap<String, UserProfile> = mutableMapOf()
+    private val jobMap: MutableMap<Int, Job> = mutableMapOf()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouriteUserViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_fav_user, parent, false)
         return FavouriteUserViewHolder(itemView)
@@ -34,31 +38,60 @@ class FavouriteUserAdapter(
     override fun onBindViewHolder(holder: FavouriteUserViewHolder, position: Int) {
         val favouriteUser = favouriteUsers[position]
         val context = holder.itemView.context
+        val userKey = "${favouriteUser.name}#${favouriteUser.tagline}"
 
-        fetchUserProfile(favouriteUser, holder, context)
+        jobMap[position]?.cancel()
+
+        if (profileCache.containsKey(userKey)) {
+            updateUserView(holder, context, favouriteUser, profileCache[userKey])
+        } else {
+            showLoadingState(holder)
+            val job = CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val response = RetrofitInstance.api.getProfile(favouriteUser.name, favouriteUser.tagline)
+                    val profile = response.body()
+                    if (profile != null) {
+                        profileCache[userKey] = profile
+                    }
+                    withContext(Dispatchers.Main) {
+                        if (holder.adapterPosition == position) {
+                            updateUserView(holder, context, favouriteUser, profile)
+                        }
+                    }
+                } catch (exception: Exception) {
+                    Log.e("FavouriteUserAdapter", "Error fetching profile", exception)
+                }
+            }
+
+            jobMap[position] = job
+        }
 
         holder.deleteButton.setOnClickListener {
             onDeleteUser(position)
         }
     }
 
-    private fun fetchUserProfile(user: FavouriteUser, holder: FavouriteUserViewHolder, context: Context) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = RetrofitInstance.api.getProfile(user.name, user.tagline)
-                updateUserView(holder, context, user, response.body())
-            } catch (exception: Exception) {
-                Log.e("FavouriteUserAdapter", "Error fetching profile", exception)
-            }
-        }
+    override fun onViewRecycled(holder: FavouriteUserViewHolder) {
+        super.onViewRecycled(holder)
+        jobMap[holder.adapterPosition]?.cancel()
     }
 
-    private suspend fun updateUserView(
+    private fun showLoadingState(holder: FavouriteUserViewHolder) {
+        holder.nameTextView.text = holder.itemView.context.getString(R.string.profile_loading)
+        holder.regionTextView.text = ""
+        holder.levelTextView.text = ""
+        holder.rankTextView.text = ""
+        holder.lpTextView.text = ""
+        holder.winrateTextView.text = ""
+        holder.imageView.setImageResource(R.drawable.default_profile_picture)
+    }
+
+    private fun updateUserView(
         holder: FavouriteUserViewHolder,
         context: Context,
         user: FavouriteUser,
         profile: UserProfile?
-    ) = withContext(Dispatchers.Main) {
+    ) {
         holder.nameTextView.text = context.getString(
             R.string.user_name_tagline,
             profile?.username ?: user.name,

@@ -48,11 +48,16 @@ class FavouriteUserAdapter(
             showLoadingState(holder)
             val job = CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = RetrofitInstance.api.getProfile(favouriteUser.name, favouriteUser.tagline)
+                    val response = RetrofitInstance.api.getProfile(
+                        favouriteUser.region.name.lowercase(),
+                        favouriteUser.name,
+                        favouriteUser.tagline
+                    )
                     val profile = response.body()
-                    if (profile != null) {
-                        profileCache[userKey] = profile
+                    profile?.let {
+                        profileCache[userKey] = it
                     }
+
                     withContext(Dispatchers.Main) {
                         if (holder.adapterPosition == position) {
                             updateUserView(holder, context, favouriteUser, profile)

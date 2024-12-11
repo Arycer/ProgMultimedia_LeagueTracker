@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@android:color/white">
+
+    <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/editar_perfil"
+            android:textSize="18sp"
+            android:textColor="@color/primaryTextColor"
+            android:layout_marginBottom="16dp"
+            android:textStyle="bold" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:weightSum="1">
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                app:boxBackgroundMode="filled"
+                app:boxBackgroundColor="@color/fieldBackground"
+                app:boxStrokeColor="@color/primaryColor"
+                app:hintAnimationEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/profile_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:hint="@string/nombre_de_usuario"
+                    android:textColor="@color/primaryTextColor" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                app:boxBackgroundMode="filled"
+                app:boxBackgroundColor="@color/fieldBackground"
+                app:boxStrokeColor="@color/primaryColor"
+                app:hintAnimationEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/profile_tag"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:hint="@string/tag"
+                    android:textColor="@color/primaryTextColor" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <!-- Spinner para región -->
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@color/fieldBackground"
+            app:boxStrokeColor="@color/primaryColor"
+            app:hintAnimationEnabled="true">
+
+        <Spinner
+                android:id="@+id/region_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="yes" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="16dp">
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/save_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/guardar"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/primaryColor"
+                android:layout_marginEnd="8dp"
+                app:cornerRadius="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancelar"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/primaryColor"
+                android:layout_marginEnd="8dp"
+                app:cornerRadius="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -15,4 +15,9 @@
     <string name="player_region">Player Region</string>
     <string name="player_level">Player Level</string>
     <string name="profile_loading">Loading…</string>
+    <string name="nombre_de_usuario">Nombre</string>
+    <string name="tag">Tag</string>
+    <string name="guardar">Guardar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="editar_perfil">Editar Perfil</string>
 </resources>

@@ -1,6 +1,6 @@
 package me.arycer.leaguetracker.model
 
-class FavouriteUser(
+class FavouriteProfile(
     val name: String,
     val tagline: String,
     val region: Region,

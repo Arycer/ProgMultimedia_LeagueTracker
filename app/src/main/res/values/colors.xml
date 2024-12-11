@@ -11,4 +11,18 @@
     <color name="green_500">#FF4CAF50</color>
     <color name="green_700">#FF388E3C</color>
     <color name="yellow_200">#FFFFF59D</color>
+    <color name="black_pastel">#FF121212</color>
+    <color name="gray_300">#FF424242</color>
+    <color name="gray_500">#FF616161</color>
+    <color name="gray_700">#FF757575</color>
+    <color name="red_pastel_light">#FFEF9A9A</color>
+    <color name="red_pastel_dark">#FFD32F2F</color>
+    <color name="blue_pastel_dark">#FF37474F</color>
+    <color name="purple_pastel">#FF6A1B9A</color>
+    <color name="green_pastel_dark">#FF2E7D32</color>
+    <color name="yellow_pastel">#FFFFF176</color>
+    <color name="background_color">#F5F5F5</color> <!-- Fondo claro -->
+    <color name="primaryColor">#6200EE</color> <!-- Color principal (Morado) -->
+    <color name="primaryTextColor">#212121</color> <!-- Color de texto principal (gris oscuro) -->
+    <color name="fieldBackground">#FFFFFF</color> <!-- Fondo de los campos de texto -->
 </resources>

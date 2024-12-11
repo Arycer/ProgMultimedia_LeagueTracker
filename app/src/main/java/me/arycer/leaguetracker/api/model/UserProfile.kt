@@ -6,5 +6,6 @@ data class UserProfile(
     val level: Int,
     val profileIconId: Int,
     val soloRankedInfo: RankedInfo?,
-    val flexRankedInfo: RankedInfo?
+    val flexRankedInfo: RankedInfo?,
+    val gameVersion: String
 )

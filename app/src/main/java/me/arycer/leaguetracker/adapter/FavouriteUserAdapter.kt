@@ -18,10 +18,11 @@ import kotlinx.coroutines.withContext
 import me.arycer.leaguetracker.R
 import me.arycer.leaguetracker.api.RetrofitInstance
 import me.arycer.leaguetracker.api.model.UserProfile
-import me.arycer.leaguetracker.model.FavouriteUser
+import me.arycer.leaguetracker.model.FavouriteProfile
 
 class FavouriteUserAdapter(
-    private val favouriteUsers: MutableList<FavouriteUser>,
+    private val favouriteProfiles: MutableList<FavouriteProfile>,
+    private val onEditUser: (Int) -> Unit,
     private val onDeleteUser: (Int) -> Unit
 ) : RecyclerView.Adapter<FavouriteUserAdapter.FavouriteUserViewHolder>() {
 
@@ -33,10 +34,10 @@ class FavouriteUserAdapter(
         return FavouriteUserViewHolder(itemView)
     }
 
-    override fun getItemCount(): Int = favouriteUsers.size
+    override fun getItemCount(): Int = favouriteProfiles.size
 
     override fun onBindViewHolder(holder: FavouriteUserViewHolder, position: Int) {
-        val favouriteUser = favouriteUsers[position]
+        val favouriteUser = favouriteProfiles[position]
         val context = holder.itemView.context
         val userKey = "${favouriteUser.name}#${favouriteUser.tagline}"
 
@@ -74,11 +75,10 @@ class FavouriteUserAdapter(
         holder.deleteButton.setOnClickListener {
             onDeleteUser(position)
         }
-    }
 
-    override fun onViewRecycled(holder: FavouriteUserViewHolder) {
-        super.onViewRecycled(holder)
-        jobMap[holder.adapterPosition]?.cancel()
+        holder.editButton.setOnClickListener {
+            onEditUser(position)
+        }
     }
 
     private fun showLoadingState(holder: FavouriteUserViewHolder) {
@@ -94,7 +94,7 @@ class FavouriteUserAdapter(
     private fun updateUserView(
         holder: FavouriteUserViewHolder,
         context: Context,
-        user: FavouriteUser,
+        user: FavouriteProfile,
         profile: UserProfile?
     ) {
         holder.nameTextView.text = context.getString(
@@ -102,23 +102,19 @@ class FavouriteUserAdapter(
             profile?.username ?: user.name,
             profile?.tagline ?: user.tagline
         )
-
         holder.regionTextView.text = context.getString(
             R.string.region_format,
             user.region.descriptor
         )
-
         holder.levelTextView.text = context.getString(
             R.string.level_format,
             profile?.level ?: 0
         )
-
         holder.rankTextView.text = context.getString(
             R.string.league_format,
-            profile?.soloRankedInfo?.tier ?: "Unranked",
+            profile?.soloRankedInfo?.tier?.lowercase()?.replaceFirstChar(Char::titlecase) ?: "Unranked",
             profile?.soloRankedInfo?.rank ?: ""
         )
-
         holder.lpTextView.text = context.getString(
             R.string.lps_format,
             profile?.soloRankedInfo?.leaguePoints ?: 0
@@ -141,12 +137,16 @@ class FavouriteUserAdapter(
             "%.2f".format(winRatePercentage)
         )
 
-        val profileImageUrl = buildProfileImageUrl(profile?.profileIconId ?: 1)
-        loadImage(holder.imageView, profileImageUrl)
+        profile?.let {
+            val imageUrl = buildProfileImageUrl(profile.gameVersion, it.profileIconId)
+            loadImage(holder.imageView, imageUrl)
+        } ?: run {
+            holder.imageView.setImageResource(R.drawable.not_found)
+        }
     }
 
-    private fun buildProfileImageUrl(profileIconId: Int): String {
-        return "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/$profileIconId.png"
+    private fun buildProfileImageUrl(gameVer: String, profileIconId: Int): String {
+        return "https://ddragon.leagueoflegends.com/cdn/$gameVer/img/profileicon/$profileIconId.png"
     }
 
     private fun loadImage(imageView: ImageView, imageUrl: String) {
@@ -163,6 +163,7 @@ class FavouriteUserAdapter(
         val levelTextView: TextView = itemView.findViewById(R.id.level_text)
         val imageView: ImageView = itemView.findViewById(R.id.profile_image)
         val deleteButton: Button = itemView.findViewById(R.id.delete_button)
+        val editButton: Button = itemView.findViewById(R.id.edit_button)
         val rankTextView: TextView = itemView.findViewById(R.id.rank_tier_text)
         val lpTextView: TextView = itemView.findViewById(R.id.lps_text)
         val winrateTextView: TextView = itemView.findViewById(R.id.winrate_text)

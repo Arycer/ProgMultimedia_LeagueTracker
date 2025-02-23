@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import me.arycer.leaguetracker.R
 import me.arycer.leaguetracker.model.FavouriteProfile
+import java.util.UUID
 
 class EditProfileDialog(context: Context, private val user: FavouriteProfile?, private val onUpdated: (FavouriteProfile) -> Unit) : Dialog(context) {
     private lateinit var nameEditText: EditText
@@ -48,7 +49,7 @@ class EditProfileDialog(context: Context, private val user: FavouriteProfile?, p
             }
 
             val updatedRegion = FavouriteProfile.Region.entries[regionSpinner.selectedItemPosition]
-            val updatedUser = FavouriteProfile(updatedName, updatedTagline, updatedRegion)
+            val updatedUser = FavouriteProfile(user?.id ?: UUID.randomUUID().toString(), updatedName, updatedTagline, updatedRegion)
 
             onUpdated(updatedUser)
             dismiss()

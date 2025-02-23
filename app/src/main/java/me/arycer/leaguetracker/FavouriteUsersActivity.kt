@@ -9,6 +9,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import me.arycer.leaguetracker.adapter.FavouriteUserAdapter
 import me.arycer.leaguetracker.dialog.EditProfileDialog
 import me.arycer.leaguetracker.model.FavouriteProfile
@@ -16,7 +18,9 @@ import me.arycer.leaguetracker.model.FavouriteProfile
 class FavouriteUsersActivity : AppCompatActivity() {
     private lateinit var userAdapter: FavouriteUserAdapter
     private lateinit var recyclerView: RecyclerView
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val users = mutableListOf<FavouriteProfile>()
+    private var listenerRegistration: ListenerRegistration? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,57 +32,57 @@ class FavouriteUsersActivity : AppCompatActivity() {
             insets
         }
 
-        this.recyclerView = findViewById(R.id.recyclerView)
-        this.recyclerView.layoutManager = LinearLayoutManager(this)
-
-        this.users.addAll(generateSampleUsers())
-
-        this.userAdapter = FavouriteUserAdapter(this.users, {
-            this.showEditDialog(it)
-        }, { position ->
-            this.users.removeAt(position)
-            this.userAdapter.notifyItemRemoved(position)
-            this.userAdapter.notifyItemRangeChanged(position, this.users.size)
-        })
-
-        this.recyclerView.adapter = this.userAdapter
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        userAdapter = FavouriteUserAdapter(users, { showEditDialog(it) }, { deleteUser(it) })
+        recyclerView.adapter = userAdapter
 
         findViewById<View>(R.id.add_button).setOnClickListener {
-            this.showEditDialog(null)
+            showEditDialog(null)
         }
+
+        listenForUsers()
+    }
+
+    private fun listenForUsers() {
+        listenerRegistration = firestore.collection("favouriteUsers")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.e("Firestore", "Error fetching users", e)
+                    return@addSnapshotListener
+                }
+                if (snapshots == null) return@addSnapshotListener
+
+                users.clear()
+                for (doc in snapshots.documents) {
+                    doc.toObject(FavouriteProfile::class.java)?.let { users.add(it) }
+                }
+                userAdapter.notifyDataSetChanged()
+            }
     }
 
     private fun showEditDialog(position: Int?) {
-        val editDialog: EditProfileDialog
-        if (position != null) {
-            val profile: FavouriteProfile = users[position]
-            editDialog = EditProfileDialog(this, profile) { updatedUser ->
-                users[position] = updatedUser
-                userAdapter.notifyItemChanged(position)
+        val editDialog: EditProfileDialog = if (position != null) {
+            val profile = users[position]
+            EditProfileDialog(this, profile) { updatedUser ->
+                firestore.collection("favouriteUsers").document(profile.id).set(updatedUser)
             }
         } else {
-            editDialog = EditProfileDialog(this, null) { newUser ->
-                users.add(newUser)
-                userAdapter.notifyItemInserted(users.size - 1)
+            EditProfileDialog(this, null) { newUser ->
+                firestore.collection("favouriteUsers")
+                    .document(newUser.id)
+                    .set(newUser)
             }
         }
-
         editDialog.show()
     }
 
-    private fun generateSampleUsers(): Collection<FavouriteProfile> {
-        return listOf(
-            FavouriteProfile("Arycer", "5190", FavouriteProfile.Region.EUW),
-            FavouriteProfile("T0uk4", "L0v3R", FavouriteProfile.Region.EUW),
-            FavouriteProfile("Likantros", "0000", FavouriteProfile.Region.EUW),
-            FavouriteProfile("Arturisimoooo", "0000", FavouriteProfile.Region.EUW),
-            FavouriteProfile("ToukaLover", "0000", FavouriteProfile.Region.EUW),
-            FavouriteProfile("AleIV", "0000", FavouriteProfile.Region.EUW),
-            FavouriteProfile("PaulleXd", "0000", FavouriteProfile.Region.EUW),
-            FavouriteProfile("MitosV", "0000", FavouriteProfile.Region.EUW),
-            FavouriteProfile("Suuitt", "0000", FavouriteProfile.Region.EUW),
-            FavouriteProfile("CelesteLove", "0000", FavouriteProfile.Region.EUW)
-        )
+    private fun deleteUser(position: Int) {
+        firestore.collection("favouriteUsers").document(users[position].id).delete()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listenerRegistration?.remove()
     }
 }
-

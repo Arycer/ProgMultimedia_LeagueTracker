@@ -31,10 +31,23 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
 
-        // Verificar si hay una sesión activa
-        if (sharedPreferences.getBoolean("IS_LOGGED_IN", false)) {
-            navigateToMain(sharedPreferences.getString("USER_EMAIL", "") ?: "")
-            return
+        val currentUser = auth.currentUser
+
+        if (sharedPreferences.getBoolean("IS_LOGGED_IN", false) && currentUser != null) {
+            currentUser.reload()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        if (auth.currentUser != null) {
+                            navigateToMain(auth.currentUser!!.email ?: "")
+                        } else {
+                            clearSession()
+                        }
+                    } else {
+                        clearSession()
+                    }
+                }
+        } else {
+            clearSession()
         }
 
         setupUI()
@@ -82,15 +95,15 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     if (auth.currentUser != null && auth.currentUser!!.isEmailVerified) {
                         saveSession(email)
-                        showToast("Inicio de sesión exitoso")
+                        showToast("Sesión iniciada correctamente.")
                         navigateToMain(email)
                     } else {
-                        showToast("Por favor, verifica tu correo electrónico.")
+                        showToast("Debes verificar tu dirección de correo electrónico antes de iniciar sesión. Revisa tu bandeja de entrada.")
                     }
                 } else {
                     when (task.exception) {
                         is FirebaseAuthInvalidCredentialsException -> showToast("Contraseña incorrecta.")
-                        is FirebaseAuthInvalidUserException -> showToast("Correo electrónico no registrado.")
+                        is FirebaseAuthInvalidUserException -> showToast("Usuario no encontrado.")
                         else -> showToast("Error en el login: ${task.exception?.message}")
                     }
                 }
@@ -113,5 +126,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun clearSession() {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("IS_LOGGED_IN", false)
+        editor.putString("USER_EMAIL", null)
+        editor.apply()
     }
 }

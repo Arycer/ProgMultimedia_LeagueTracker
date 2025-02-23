@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +24,8 @@ import me.arycer.leaguetracker.model.FavouriteProfile
 class FavouriteUserAdapter(
     private val favouriteProfiles: MutableList<FavouriteProfile>,
     private val onEditUser: (Int) -> Unit,
-    private val onDeleteUser: (Int) -> Unit
+    private val onDeleteUser: (Int) -> Unit,
+    private val onShowProfile: (UserProfile) -> Unit
 ) : RecyclerView.Adapter<FavouriteUserAdapter.FavouriteUserViewHolder>() {
 
     private val profileCache: MutableMap<String, UserProfile> = mutableMapOf()
@@ -78,6 +80,14 @@ class FavouriteUserAdapter(
 
         holder.editButton.setOnClickListener {
             onEditUser(position)
+        }
+
+        holder.itemView.setOnClickListener {
+            profileCache[userKey]?.let {
+                onShowProfile(it)
+            } ?: run {
+                showToast(context, "Profile not loaded yet")
+            }
         }
     }
 
@@ -155,6 +165,10 @@ class FavouriteUserAdapter(
             .placeholder(R.drawable.default_profile_picture)
             .error(R.drawable.default_profile_picture)
             .into(imageView)
+    }
+
+    private fun showToast(context: Context, message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     class FavouriteUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

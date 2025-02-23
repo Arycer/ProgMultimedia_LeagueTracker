@@ -1,5 +1,6 @@
 package me.arycer.leaguetracker
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import me.arycer.leaguetracker.adapter.FavouriteUserAdapter
+import me.arycer.leaguetracker.api.model.UserProfile
 import me.arycer.leaguetracker.dialog.EditProfileDialog
 import me.arycer.leaguetracker.model.FavouriteProfile
 
@@ -39,6 +41,8 @@ class FavouriteUsersActivity : AppCompatActivity() {
             this.users.removeAt(position)
             this.userAdapter.notifyItemRemoved(position)
             this.userAdapter.notifyItemRangeChanged(position, this.users.size)
+        }, { user ->
+            this.showProfile(user)
         })
 
         this.recyclerView.adapter = this.userAdapter
@@ -46,6 +50,12 @@ class FavouriteUsersActivity : AppCompatActivity() {
         findViewById<View>(R.id.add_button).setOnClickListener {
             this.showEditDialog(null)
         }
+    }
+
+    private fun showProfile(user: UserProfile) {
+        val intent = Intent(this, MatchesActivity::class.java)
+        intent.putExtra("Username", user.username)
+        intent.putExtra("Tagline", user.tagline)
     }
 
     private fun showEditDialog(position: Int?) {

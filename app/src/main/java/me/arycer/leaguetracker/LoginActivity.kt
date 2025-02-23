@@ -1,8 +1,8 @@
 package me.arycer.leaguetracker
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -10,16 +10,23 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var usernameEditText: EditText
-    private lateinit var passwordEditText: EditText
-    private lateinit var loginButton: Button
+    private var usernameEditText: EditText? = null
+    private var passwordEditText: EditText? = null
+    private var loginButton: Button? = null
+    private var registerButton: Button? = null
+    private var auth: FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
+
+        auth = FirebaseAuth.getInstance()
         setupUI()
         setupListeners()
     }
@@ -27,49 +34,73 @@ class LoginActivity : AppCompatActivity() {
     private fun setupUI() {
         usernameEditText = findViewById(R.id.username_field)
         passwordEditText = findViewById(R.id.password_field)
+        registerButton = findViewById(R.id.register_button)
         loginButton = findViewById(R.id.login_button)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+        ViewCompat.setOnApplyWindowInsetsListener(
+            findViewById(R.id.main)
+        ) { v: View, insets: WindowInsetsCompat ->
+            v.setPadding(
+                insets.getInsets(WindowInsetsCompat.Type.systemBars()).left,
+                insets.getInsets(WindowInsetsCompat.Type.systemBars()).top,
+                insets.getInsets(WindowInsetsCompat.Type.systemBars()).right,
+                insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+            )
             insets
         }
     }
 
     private fun setupListeners() {
-        loginButton.setOnClickListener {
-            val userInput = usernameEditText.text.toString().trim()
-            val passInput = passwordEditText.text.toString().trim()
-            handleLogin(this, userInput, passInput)
+        loginButton?.setOnClickListener { v: View? ->
+            val email = usernameEditText!!.text.toString().trim { it <= ' ' }
+            val password = passwordEditText!!.text.toString().trim { it <= ' ' }
+
+            if (email.isEmpty() || password.isEmpty()) {
+                showToast("Tienes que introducir un usuario y contraseña")
+                return@setOnClickListener
+            }
+            handleFirebaseLogin(email, password)
+        }
+
+        registerButton?.setOnClickListener { v: View? ->
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    private fun handleLogin(context: Context, userInput: String, passInput: String) {
-        val correctUsername = context.getString(R.string.default_username)
-        val correctPassword = context.getString(R.string.default_password)
-
-        when {
-            userInput.isBlank() || passInput.isBlank() -> {
-                showToast("Tienes que intruducir un usuario y contraseña")
+    private fun handleFirebaseLogin(email: String, password: String) {
+        auth?.signInWithEmailAndPassword(email, password)
+            ?.addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    if (auth?.currentUser != null && auth?.currentUser?.isEmailVerified == true) {
+                        showToast("Inicio de sesión exitoso")
+                        navigateToMain(email)
+                    } else {
+                        showToast("Por favor, verifica tu correo electrónico.")
+                    }
+                } else {
+                    if (task.exception is FirebaseAuthInvalidCredentialsException) {
+                        showToast("Contraseña incorrecta.")
+                    } else if (task.exception is FirebaseAuthInvalidUserException) {
+                        showToast("Correo electrónico no registrado.")
+                    } else {
+                        showToast("Error en el login: " + task.exception?.message)
+                    }
+                }
             }
-            userInput == correctUsername && passInput == correctPassword -> {
-                showToast("Inicio de sesión exitoso")
-                navigateToMain(userInput)
-            }
-            else -> {
-                showToast("Usuario o contraseña incorrectos")
-            }
-        }
     }
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun navigateToMain(userInput: String) {
-        val intent = Intent(this, FavouriteUsersActivity::class.java)
-        intent.putExtra("LoginUsername", userInput)
+    private fun navigateToMain(email: String) {
+        val intent = Intent(
+            this,
+            FavouriteUsersActivity::class.java
+        )
+        intent.putExtra("LoginUsername", email)
         startActivity(intent)
+        finish()
     }
-
 }

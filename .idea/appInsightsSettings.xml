@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="me.arycer.leaguetracker" />
+                  <option name="mobileSdkAppId" value="1:434081311283:android:6c8959454d451062941146" />
+                  <option name="projectId" value="leaguetracker-f4fb1" />
+                  <option name="projectNumber" value="434081311283" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

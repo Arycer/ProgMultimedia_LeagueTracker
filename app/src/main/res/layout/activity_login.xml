@@ -83,14 +83,42 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/login_button"
+            <TextView
+                    android:id="@+id/forgotPassword"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Login"
-                    tools:ignore="MissingConstraints"
-                    android:layout_marginTop="15dp" />
+                    android:text="¿Olvidaste tu contraseña?"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    />
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:padding="16dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/login_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Iniciar Sesión"
+                        tools:ignore="MissingConstraints"
+                        android:layout_marginTop="15dp" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/register_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Registrar"
+                        tools:ignore="MissingConstraints"
+                        android:layout_marginTop="15dp" />
+            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

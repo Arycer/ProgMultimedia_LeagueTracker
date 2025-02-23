@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "434081311283",
+    "project_id": "leaguetracker-f4fb1",
+    "storage_bucket": "leaguetracker-f4fb1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:434081311283:android:6c8959454d451062941146",
+        "android_client_info": {
+          "package_name": "me.arycer.leaguetracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz96R8dT3Lv-PjDuyACpZZeEmk2w82Hf4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

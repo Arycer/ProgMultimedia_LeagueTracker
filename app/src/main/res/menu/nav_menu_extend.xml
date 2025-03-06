@@ -9,7 +9,7 @@
                 android:title="Home"
                 android:id="@+id/Home" />
         <item
-                android:title="Lista de Cartas"
+                android:title="Perfiles guardados"
                 android:id="@+id/favUsers" />
     </group>
     <item android:title="">

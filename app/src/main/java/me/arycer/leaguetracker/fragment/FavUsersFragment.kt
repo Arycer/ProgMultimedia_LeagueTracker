@@ -5,6 +5,7 @@ import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -77,12 +78,14 @@ class FavUsersFragment : Fragment(R.layout.fragment_fav_users) {
                 firestore.collection("favouriteUsers")
                     .document(profile.id)
                     .set(updatedUser)
+                Toast.makeText(requireContext(), "Usuario actualizado", Toast.LENGTH_SHORT).show()
             }
         } else {
             EditProfileDialog(requireActivity(), null) { newUser ->
                 firestore.collection("favouriteUsers")
                     .document(newUser.id)
                     .set(newUser)
+                Toast.makeText(requireContext(), "Usuario agregado", Toast.LENGTH_SHORT).show()
             }
         }
         editDialog.show()
@@ -93,6 +96,7 @@ class FavUsersFragment : Fragment(R.layout.fragment_fav_users) {
         firestore.collection("favouriteUsers")
             .document(users[position].id)
             .delete()
+        Toast.makeText(requireContext(), "Usuario eliminado", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

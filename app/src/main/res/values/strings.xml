@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ProgMultimedia_LeagueTracker</string>
+    <string name="app_name">League Tracker</string>
     <string name="default_username">admin</string>
     <string name="default_password">admin</string>
     <string name="user_name_tagline">%s#%s</string>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:startDestination="@id/fragmentHome">
+
+    <fragment
+            android:id="@+id/fragmentHome"
+            android:name="me.arycer.leaguetracker.fragment.HomeFragment"
+            android:label="Home">
+        <action
+                android:id="@+id/action_to_favusers"
+                app:destination="@id/favUsers" />
+    </fragment>
+
+    <fragment
+            android:id="@+id/favUsers"
+            android:name="me.arycer.leaguetracker.fragment.FavUsersFragment"
+            android:label="FavUsers">
+        <action
+                android:id="@+id/action_to_start"
+                app:destination="@id/fragmentHome" />
+    </fragment>
+</navigation>

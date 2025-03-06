@@ -91,8 +91,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:clickable="true"
-                    android:focusable="true"
-                    />
+                    android:focusable="true" />
 
             <LinearLayout
                     android:layout_width="wrap_content"
@@ -122,22 +121,22 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-<!--    <CheckBox
-            android:id="@+id/checkboxRememberMe"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/loginCard" />
+    <!--    <CheckBox
+                android:id="@+id/checkboxRememberMe"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/loginCard" />
 
-    <TextView
-            android:id="@+id/rememberMe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Recuerdame"
-            app:layout_constraintStart_toEndOf="@id/checkboxRememberMe"
-            app:layout_constraintTop_toBottomOf="@id/loginCard"
-            android:layout_marginTop="13dp"
-            android:layout_marginStart="-10dp" />-->
+        <TextView
+                android:id="@+id/rememberMe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recuerdame"
+                app:layout_constraintStart_toEndOf="@id/checkboxRememberMe"
+                app:layout_constraintTop_toBottomOf="@id/loginCard"
+                android:layout_marginTop="13dp"
+                android:layout_marginStart="-10dp" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

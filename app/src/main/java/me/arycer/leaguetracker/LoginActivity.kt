@@ -1,137 +1,123 @@
 package me.arycer.leaguetracker
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 
 class LoginActivity : AppCompatActivity() {
-    private var usernameEditText: EditText? = null
-    private var passwordEditText: EditText? = null
-    private var loginButton: Button? = null
-    private var registerButton: Button? = null
+
     private lateinit var auth: FirebaseAuth
-    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        // Inicializa FirebaseAuth
+        auth = FirebaseAuth.getInstance()
+
+        // Verifica si el usuario ya está logueado
+        val currentUser = auth.currentUser
+        if (currentUser != null && currentUser.isEmailVerified) {
+            // Si el usuario ya está logueado y el correo está verificado, redirige a MainActivity
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish() // Cierra LoginActivity para no poder regresar
+            return
+        }
+
         setContentView(R.layout.activity_login)
 
-        auth = FirebaseAuth.getInstance()
-        sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
+        val forgotPasswordTextView = findViewById<TextView>(R.id.forgotPassword)
+        forgotPasswordTextView.setOnClickListener {
+            val intent = Intent(this, RecoverPasswordActivity::class.java)
+            startActivity(intent)
+        }
 
-        val currentUser = auth.currentUser
+        val nombreUsuarioLayout = findViewById<EditText>(R.id.username_field)
+        val usuarioEditText = nombreUsuarioLayout.text
 
-        if (sharedPreferences.getBoolean("IS_LOGGED_IN", false) && currentUser != null) {
-            currentUser.reload()
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        if (auth.currentUser != null) {
-                            navigateToMain(auth.currentUser!!.email ?: "")
-                        } else {
-                            clearSession()
-                        }
+        val passwordEditText = findViewById<TextInputEditText>(R.id.password_field)
+
+        val loginButton = findViewById<Button>(R.id.login_button)
+
+        loginButton.setOnClickListener {
+            val username = usuarioEditText?.toString() ?: ""
+            val password = passwordEditText?.text.toString()
+
+            // Validación de campos vacíos
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Por favor, ingrese todos los campos", Toast.LENGTH_SHORT).show()
+            } else {
+                // Intentar iniciar sesión con Firebase
+                startLogin(username, password) { isSuccess, msg ->
+                    if (isSuccess) {
+                        // Login exitoso
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                        finish() // Cerrar LoginActivity
                     } else {
-                        clearSession()
+                        // Mostrar el mensaje de error
+                        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
                     }
                 }
-        } else {
-            clearSession()
-        }
-
-        setupUI()
-        setupListeners()
-    }
-
-    private fun setupUI() {
-        usernameEditText = findViewById(R.id.username_field)
-        passwordEditText = findViewById(R.id.password_field)
-        registerButton = findViewById(R.id.register_button)
-        loginButton = findViewById(R.id.login_button)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v: View, insets: WindowInsetsCompat ->
-            v.setPadding(
-                insets.getInsets(WindowInsetsCompat.Type.systemBars()).left,
-                insets.getInsets(WindowInsetsCompat.Type.systemBars()).top,
-                insets.getInsets(WindowInsetsCompat.Type.systemBars()).right,
-                insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
-            )
-            insets
-        }
-    }
-
-    private fun setupListeners() {
-        loginButton?.setOnClickListener {
-            val email = usernameEditText!!.text.toString().trim()
-            val password = passwordEditText!!.text.toString().trim()
-
-            if (email.isEmpty() || password.isEmpty()) {
-                showToast("Tienes que introducir un usuario y contraseña")
-                return@setOnClickListener
             }
-            handleFirebaseLogin(email, password)
         }
 
-        registerButton?.setOnClickListener {
+        val registerButton = findViewById<Button>(R.id.register_button)
+        registerButton.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
     }
 
-    private fun handleFirebaseLogin(email: String, password: String) {
+    private fun startLogin(email: String, password: String, onResult: (Boolean, String) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    if (auth.currentUser != null && auth.currentUser!!.isEmailVerified) {
-                        saveSession(email)
-                        showToast("Sesión iniciada correctamente.")
-                        navigateToMain(email)
+                    val user = auth.currentUser
+                    if (user != null && user.isEmailVerified) {
+                        // Guardar el UID del usuario y el estado de la sesión en SharedPreferences
+                        val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        editor.putString("USER_ID", user.uid)  // Guarda el UID del usuario
+                        editor.putBoolean("IS_LOGGED_IN", true)  // Marca que el usuario está logeado
+                        editor.apply()
+
+                        onResult(true, "Login exitoso")
                     } else {
-                        showToast("Debes verificar tu dirección de correo electrónico antes de iniciar sesión. Revisa tu bandeja de entrada.")
+                        // El correo no está verificado
+                        onResult(false, "Por favor, verifica tu correo electrónico.")
                     }
                 } else {
-                    when (task.exception) {
-                        is FirebaseAuthInvalidCredentialsException -> showToast("Contraseña incorrecta.")
-                        is FirebaseAuthInvalidUserException -> showToast("Usuario no encontrado.")
-                        else -> showToast("Error en el login: ${task.exception?.message}")
+                    // Manejo de errores de login
+                    val exception = task.exception
+                    when (exception) {
+                        is FirebaseAuthInvalidCredentialsException -> {
+                            // Contraseña incorrecta
+                            onResult(false, "Contraseña incorrecta.")
+                        }
+                        is FirebaseAuthUserCollisionException -> {
+                            // Correo ya registrado
+                            onResult(false, "Este correo ya está registrado.")
+                        }
+                        is FirebaseAuthInvalidUserException -> {
+                            // Correo electrónico no existe
+                            onResult(false, "Correo electrónico no registrado.")
+                        }
+                        else -> {
+                            // Otro tipo de error
+                            onResult(false, "Error en el login: ${exception?.message}")
+                        }
                     }
                 }
             }
-    }
-
-    private fun saveSession(email: String) {
-        val editor = sharedPreferences.edit()
-        editor.putBoolean("IS_LOGGED_IN", true)
-        editor.putString("USER_EMAIL", email)
-        editor.apply()
-    }
-
-    private fun navigateToMain(email: String) {
-        val intent = Intent(this, FavouriteUsersActivity::class.java)
-        intent.putExtra("LoginUsername", email)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun clearSession() {
-        val editor = sharedPreferences.edit()
-        editor.putBoolean("IS_LOGGED_IN", false)
-        editor.putString("USER_EMAIL", null)
-        editor.apply()
     }
 }

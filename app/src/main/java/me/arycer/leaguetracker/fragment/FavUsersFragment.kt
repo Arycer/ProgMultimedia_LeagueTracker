@@ -1,6 +1,7 @@
 package me.arycer.leaguetracker.fragment
 
 import android.annotation.SuppressLint
+import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -21,30 +22,32 @@ class FavUsersFragment : Fragment(R.layout.fragment_fav_users) {
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val users = mutableListOf<FavouriteProfile>()
     private var listenerRegistration: ListenerRegistration? = null
+    private val soundPool = SoundPool.Builder().setMaxStreams(1).build()
+    private var soundButtonId: Int = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-/*        // Aplica los insets para lograr un display edge-to-edge
-        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }*/
 
         // Configuración del RecyclerView y su adapter
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         userAdapter = FavouriteUserAdapter(users, { showEditDialog(it) }, { deleteUser(it) })
         recyclerView.adapter = userAdapter
+        soundButtonId = soundPool.load(this.context, R.raw.click, 1)
 
         // Configura el botón para agregar un nuevo usuario
         view.findViewById<View>(R.id.add_button).setOnClickListener {
             showEditDialog(null)
+            soundPool.play(soundButtonId, 1f, 1f, 1, 0, 1f)
         }
 
         // Inicia la escucha de cambios en Firestore
         listenForUsers()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        soundPool.release()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -67,6 +70,7 @@ class FavUsersFragment : Fragment(R.layout.fragment_fav_users) {
     }
 
     private fun showEditDialog(position: Int?) {
+        soundPool.play(soundButtonId, 1f, 1f, 1, 0, 1f)
         val editDialog = if (position != null) {
             val profile = users[position]
             EditProfileDialog(requireActivity(), profile) { updatedUser ->
@@ -85,6 +89,7 @@ class FavUsersFragment : Fragment(R.layout.fragment_fav_users) {
     }
 
     private fun deleteUser(position: Int) {
+        soundPool.play(soundButtonId, 1f, 1f, 1, 0, 1f)
         firestore.collection("favouriteUsers")
             .document(users[position].id)
             .delete()
